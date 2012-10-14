@@ -74,7 +74,7 @@
 </section>
 
 <section>
-  Pyramid app setup:
+  <h2>Pyramid and H5BP bootstrapping</h2>
 
   mkdir moo
   cd moo
@@ -113,12 +113,86 @@
   cd ~/moo/Moo
   pserve --reload development.ini
 
+  # Go in index.html, and ADD SOME SPACE AROUND THE "Hello world!" LINE
+
   # Connect to:
   http://localhost:6543/
 
   # And we're ready to go.
+</section>
 
 
+<section>
+  <h2>Integrating AngularJS</h2>
+
+  We'll use Google's CDN to simplify our job here..
+
+  # Tweak index.html and add:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
+  # from https://developers.google.com/speed/libraries/devguide (fragment: #angularjs)
+  # just after:
+  <script src="/static/js/plugins.js"></script>
+
+  # In the background, install a local copy of AngularJS and load it from here.
+  cd ~/moo/Moo/moo/static/js/vendor
+  wget http://code.angularjs.org/1.0.2/angular.min.js
+  # Replace the line we just added from the Google CDN with:
+  <script src="/static/js/vendor/angular.min.js"></script>
+
+  # Add:
+  ng-app="moo"
+  # to our <html> tag
+
+  # Add:
+  ng-controller="MooCtrl"
+  # to the <body> tag.
+
+  # Add:
+  ng-cloak
+  # to the same body tag if we can, and add this to the `main.css` file:
+  [ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none;
+  }
+  # See: http://docs.angularjs.org/api/ng.directive:ngCloak for more details.
+
+  # Go to `main.js`, and add:
+  angular.module('moo', [])
+    .controller("MooCtrl", function($scope) {
+      console.log("We're here!");
+    })
+  # See http://docs.angularjs.org/guide/di, see section "Inline Annotation" for the best way to declare these things.
+
+  # Refresh page, show the console. and we're up :)
+</section>
+
+<section>
+  <h2>Quick demo of AngularJS's data-binding</h2>
+
+  # Add:
+      $scope.who = 'Mama';
+  # to MooCtrl
+
+  # Change:
+  "Hello World!" for "Hello {{who}}!"
+  # in index.html, refresh, show that it uses the data, interpolation
+
+  # We might want to explain at this point, the DOM-based templating, the
+  # interpretation of the $scope from the DOM node, and the fact that any
+  # child nodes can access the $scope.  The fact that $scope is attached
+  # to the DOM node.
+
+  # Show two-way, add the <input> tag, change:
+  "<p>Hello {{who}}! This is <input ng-model="who" />.</p>"
+
+  # Show off the two-way binding, explain that ng-model tweaks the $scope value
+  # and any changes to the model get reflected (after a $digest() cycle) back
+  # into the DOM, using the Observer pattern.  Each of those {{who}} set up
+  # watches to update the DOM when they change.
+
+
+
+
+</section>
 
 Reference for AngularJS + D3 integration
 

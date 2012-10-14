@@ -96,6 +96,11 @@ textarea {
 
 
 
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none;
+}
+
+
 
 
 
