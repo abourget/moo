@@ -1,0 +1,98 @@
+
+
+
+<section>
+  <h2>Opening</h2>
+
+  Welcome
+  - Who I am
+  - Where I've been
+
+  Chocolate up front
+  Nomination of a REGULATOR
+
+
+  I work at Tenscores, Tech Lead over there.
+
+  We're building an awesome Google AdWords campaign soptimization platform.  Every AdWords marketing should know and try it out.
+
+  Our use case:  we're a startup, and we need insights.
+</section>
+
+
+<section>
+  <h2>What we'll cover</h2>
+
+  - Gevent quick intro
+  - Gevent-socketio, the new revamped, cross-framework
+    - Show a bit of history, main contributors, jgelens, John Anderson, PyCon 2012 sprints
+    - Show the old posts, videos
+  - AngularJS, wire-in Socket.IO in there
+  - Gevent-SocketIO:
+     - Show example of integration with Django / Flask (in the examples repo)
+  -
+
+</section>
+
+
+<section>
+  <h2>gevent</h2>
+
+  - Quick demo of parallel programming
+  - Show off a couple of primitives
+  - Monkey patch
+  - pdb hangs everything
+</section>
+
+<section>
+  <h2>AngularJS</h2>
+
+  - Demo data binding
+  - Get data from server (flat JSON), assign a var
+  - Put in a directive, Plot it with a graph
+  - Update the data on the server, and *hop*, the graph updates
+
+  - Replace static data with live data, through Socket.IO though
+
+  - Multiply the number of graphs, by adding more <ts-graph> to the view.
+    Configured through an attribute.
+
+  - Do something like the Evtrack directive, to collect from other parts of
+    the UI.
+</section>
+
+<section>
+  <h2>gevent-socketio</h2>
+
+  - Persistence mech ? MongoDB ? In-memory ? Tailable cursor ?
+  - Gather events through JSON
+  - SocketIO context to send off values tail'd from the incoming flow
+  - Demo MIXIN
+  - Demo on_ things, recv_, disconnect, jobs spawn'd
+    - On disconnect, register an event with a timespan (beginning on connection
+      time).  Use the timeout of the socket to know the presence of the guy :)
+</section>
+
+<section>
+  Pyramid app setup:
+
+  mkdir moo
+  cd moo
+  virtualenv env
+  . env/bin/activate
+  pip install pyramid
+  pcreate -t starter Moo
+
+  # Clean up default pyramid files
+  rm -rf Moo/moo/templates/* Moo/moo/static/*
+
+  # Load in H5BP
+  git clone git://github.com/h5bp/html5-boilerplate.git
+  cp html5-boilerplate/index.html Moo/moo/templates/
+  cp -rv html5-boilerplate/{css,js,img} Moo/moo/static/
+
+  # Fixup the index.html template
+  replace "/css/" by "/static/css/"
+  replace "/js/" by "/static/js/"
+
+  # Change the default template to load
