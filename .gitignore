@@ -6,7 +6,7 @@ pip-log.txt
 data/
 \#*
 .\#*
-ITHQ.egg-info
+Moo.egg-info
 paster.log
 
 # Personal config file

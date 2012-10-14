@@ -82,6 +82,7 @@
   . env/bin/activate
   pip install pyramid
   pcreate -t starter Moo
+  python Moo/setup.py develop  # not useful
 
   # Clean up default pyramid files
   rm -rf Moo/moo/templates/* Moo/moo/static/*
@@ -96,3 +97,4 @@
   replace "/js/" by "/static/js/"
 
   # Change the default template to load
+
