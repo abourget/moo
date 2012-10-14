@@ -189,10 +189,142 @@
   # into the DOM, using the Observer pattern.  Each of those {{who}} set up
   # watches to update the DOM when they change.
 
-
-
-
+  # For good performances, keep the number of watched under 2000 and
+  # you're set.  You rarely need to have 2000 elements in one view to be
+  # updated at a single time for the user to see the change and there
+  # are plenty of ways to optimize the pattern.
 </section>
+
+
+<section>
+  <h2>Bootstrap gevent and gevent-socketio</h2>
+
+  cd ~/moo
+  . env/bin/activate
+  # Before, you'll need on your system: libevent-dev (Debian)
+  pip install gevent gevent-socketio
+  # TODO: warning, we need to install the Git version to have paster integration.
+  # otherwise, we need to release to pypi a new -rc version.
+  # or "mock" that part for the presentation.
+
+  # Explain the different components:
+  # Greenlets are micro-threads
+  # Do something inspired by: http://blog.abourget.net/2011/3/17/new-and-hot-part-4-pyramid-socket-io-gevent/
+
+  # In the previous version of gevent-socketio, we needed "pyramid_socketio", which
+  # was yet another layer of integration.  Basically, all the good stuff and patterns
+  # from pyramid_socketio, were extracted and made framework agnostic.
+
+  # We now have integration demo for Flask, Django, Pyramid and a
+  # barebone WSGI app (live_cpu_graph)
+
+  # TODO: Install psutil for data gathering ?
+
+  # Go in your development.ini file and change line:
+  use = egg:waitress#main
+  # for:
+  use = egg:gevent-socketio#paster
+
+  # Build a slide with some available options:
+  transports = xhr-multipart, xhr-polling, websocket
+  policy_server = True
+
+  # We're now on top of Gevent, serving with Socket.IO
+  # We'll just need to integrate some client service of the Socket.IO
+  # protocol now (TODO: rephrase)
+
+  # We'll want to monkey patch, so what I did is:
+  cp ~/moo/env/bin/pserve ~/moo/env/bin/ppserve
+  # and add the line:
+  from gevent.monkey import patch_all; patch_all()
+  # in ppserve down there, just before the last call.
+</section>
+
+<section>
+  <h2>Wire-in the javascript socket.io lib and communicate</h2>
+
+  # TODO: add socket.io <script>
+  # Add the tag from CDN-js ("the missing cdn" as they call it) http://cdnjs.com
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js"></script>
+  # just after the `angular.min.js` line.
+
+  # In the background, replace that previous <script> line by:
+  <script src="/static/js/vendor/socket.io.min.js"></script>
+  # and run:
+  cd ~/moo/Moo/moo/static/js/vendor
+  wget http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js
+  # You're not safe from a flaky Internet :)
+
+
+
+  # TODO: start writing an AngularJS service:
+  .factory("$socketio", function($rootScope) {
+    var socket = io.connect();
+  })
+  # Explain a bit of the dependency injection
+  # Then, change:
+  .controller("MooCtrl", function($scope) {
+  # for:
+  .controller("MooCtrl", function($scope, $socketio) {
+  # and start to put some listeners.
+
+  # TODO: fix the yasnippet "returnsocketio"
+
+  # We'll wrap socket.io's lib so that when some data arrives, we actually
+  # trigger Angular's $digest, and update the UI.
+
+
+
+  # TODO: paste the socket_io connection method,
+  # TODO: add_route to __init__.py:
++    config.add_route('socketio', 'socket.io/*remaining')  # based on `resource`
+
+  # TODO: add something like:
++    $scope.cpu = 'waiting';
++
++    $socketio.on('cpu', function(data) {
++      $scope.cpu = data.cpu;
++    });
+  # TODO and:
++        <p>CPU val: {{cpu}}</p>
+  # in the template
+
+  # In views.py, add something like:
++from socketio.namespace import BaseNamespace
++
++class GlobNamespace(BaseNamespace):
++    def connect(self):
++        self.emit("cpu", {"cpu": 123})
++
++@view_config(route_name="socketio")
++def iohandler(request):
++    from socketio import socketio_manage
++    print "BOO"
++    socketio_manage(request.environ, {"": GlobNamespace},
++                    request)
+
+  # TODO: BUT IT DOESN'T WORK!
+  # TODO: explain the different EVENTS, this is the CORE of the presentation
+  #    how socketio works in Gevent!
+
+
+
+
+  # TODO: Show a little service about how we connect
+</section>
+
+<section>
+  <h2>Integration of the Graph</h2>
+
+  Now let's see a graph with data coming from the server
+</section>
+
+
+
+
+
+
+
 
 Reference for AngularJS + D3 integration
 
