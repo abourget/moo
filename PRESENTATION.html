@@ -189,7 +189,7 @@
   # into the DOM, using the Observer pattern.  Each of those {{who}} set up
   # watches to update the DOM when they change.
 
-  # For good performances, keep the number of watched under 2000 and
+  # For good performances, keep the number of watches under 2000 and
   # you're set.  You rarely need to have 2000 elements in one view to be
   # updated at a single time for the user to see the change and there
   # are plenty of ways to optimize the pattern.
@@ -260,57 +260,77 @@
   # TODO: start writing an AngularJS service:
   .factory("$socketio", function($rootScope) {
     var socket = io.connect();
+    return {
+      on: function (eventName, callback) {
+        socket.on(eventName, function () {
+          var args = arguments;
+          $rootScope.$apply(function () {
+            callback.apply(socket, args);
+          });
+        });
+      },
+      emit: function (eventName, data, callback) {
+        socket.emit(eventName, data, function () {
+          var args = arguments;
+          $rootScope.$apply(function () {
+            if (callback) {
+              callback.apply(socket, args);
+            }
+          });
+        })
+      }
+    };
   })
   # Explain a bit of the dependency injection
+  # Explain this is a standard integration for Socket.IO in AngularJS.
+  # Explain the callback() wrapped into the $apply called.
+  # We'll wrap socket.io's lib so that when some data arrives, we actually
+  # trigger Angular's $digest, and update the UI.
+  # - Show off the $digest cycle ?  Before, after ?
+  # TODO: fix the yasnippet "returnsocketio"
+
   # Then, change:
   .controller("MooCtrl", function($scope) {
   # for:
   .controller("MooCtrl", function($scope, $socketio) {
-  # and start to put some listeners.
+  # Explain the Dependency Injection.
+  # Add to MooCtrl:
+    $scope.cpu = 'waiting';
 
-  # TODO: fix the yasnippet "returnsocketio"
+    $socketio.on('cpu', function(data) {
+      $scope.cpu = data.cpu;
+    });
 
-  # We'll wrap socket.io's lib so that when some data arrives, we actually
-  # trigger Angular's $digest, and update the UI.
+  # Add to index.html:
+  <p>CPU val: {{cpu}}</p>
+  # Show off the thing with 'waiting'
 
 
+  # On the Python side now
 
-  # TODO: paste the socket_io connection method,
-  # TODO: add_route to __init__.py:
-+    config.add_route('socketio', 'socket.io/*remaining')  # based on `resource`
+  # Add your route to __init__.py:
+    config.add_route('socketio', 'socket.io/*remaining')  # based on `resource`
 
-  # TODO: add something like:
-+    $scope.cpu = 'waiting';
-+
-+    $socketio.on('cpu', function(data) {
-+      $scope.cpu = data.cpu;
-+    });
-  # TODO and:
-+        <p>CPU val: {{cpu}}</p>
-  # in the template
 
-  # In views.py, add something like:
-+from socketio.namespace import BaseNamespace
-+
-+class GlobNamespace(BaseNamespace):
-+    def connect(self):
-+        self.emit("cpu", {"cpu": 123})
-+
-+@view_config(route_name="socketio")
-+def iohandler(request):
-+    from socketio import socketio_manage
-+    print "BOO"
-+    socketio_manage(request.environ, {"": GlobNamespace},
-+                    request)
+  # In views.py, add:
+  from socketio.namespace import BaseNamespace
 
-  # TODO: BUT IT DOESN'T WORK!
-  # TODO: explain the different EVENTS, this is the CORE of the presentation
+  class CPUNamespace(BaseNamespace):
+      def initialize(self):
+          print "INIT!"
+          self.emit("cpu", {"cpu": 123})
+      def recv_connect(self):
+          print "CONNECT!"
+
+  @view_config(route_name="socketio")
+  def iohandler(request):
+      from socketio import socketio_manage
+      socketio_manage(request.environ, {'/cpu': CPUNamespace},
+                      request)
+
+  # Explain the different EVENTS, this is the CORE of the presentation
   #    how socketio works in Gevent!
 
-
-
-
-  # TODO: Show a little service about how we connect
 </section>
 
 <section>
