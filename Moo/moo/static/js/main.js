@@ -97,9 +97,15 @@ angular.module('moo', [])
         $scope.$watch('data.length', function(oldLen, newLen) {
           var data = $scope.data;
           if ($scope.max_delta) {
-            var delta = data[data.length - 1][0] - data[0][0];
-            if (delta > $scope.max_delta) {
-              $scope.data = $scope.data.splice(1);
+            var last_tm = data[data.length - 1][0];
+            // Take out the number we need to have the max size
+            for (var i = 0; i < data.length; i++ ) {
+              var delta = last_tm - data[i][0];
+              if (delta < $scope.max_delta) {
+                if (i == 0) { break; }
+                $scope.data = $scope.data.splice(i);
+                break;
+              }
             }
           }
 
