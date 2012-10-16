@@ -13,6 +13,11 @@ angular.module('moo', [])
       $scope.live_data.push(data.live_data);
     });
 
+    $scope.speed = 1.0;
+    $scope.$watch('speed', function(newVal, oldVal) {
+      console.log("CHANGING SPEED");
+      $socketio.emit('new_speed', parseFloat(newVal));
+    });
   })
 
   .factory("$socketio", function($rootScope) {
@@ -92,8 +97,7 @@ angular.module('moo', [])
         $scope.$watch('data.length', function(oldLen, newLen) {
           var data = $scope.data;
           if ($scope.max_delta) {
-            console.log("MAX_DELTA");
-            var delta = data[data.length -1 ][0] - data[0][0];
+            var delta = data[data.length - 1][0] - data[0][0];
             if (delta > $scope.max_delta) {
               $scope.data = $scope.data.splice(1);
             }

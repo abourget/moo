@@ -25,15 +25,21 @@
 
 
 
-
-
         <!-- Add your site or application content here -->
         <p>Hello {{who}}! This is <input ng-model="who" />.</p>
         <p>CPU val: {{cpu}}</p>
 
+        <div>Speed:
+          <select ng-model="speed">
+            <option>0.20</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>2</option>
+          </select>
+        </div>
 
         <my-live-graph data="live_data" max_delta="7000"
-                       width="500" height="200">
+                       width="700" height="200">
         </my-live-graph>
 
 
