@@ -32,6 +32,9 @@
         <p>CPU val: {{cpu}}</p>
 
 
+        <my-live-graph data="live_data" max_delta="7000"
+                       width="500" height="200">
+        </my-live-graph>
 
 
 
@@ -44,6 +47,7 @@
         <script src="/static/js/plugins.js"></script>
         <script src="/static/js/vendor/angular.min.js"></script>
         <script src="/static/js/vendor/socket.io.min.js"></script>
+        <script src="http://d3js.org/d3.v2.js"></script>
         <script src="/static/js/main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

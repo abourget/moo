@@ -7,15 +7,24 @@ def my_view(request):
 
 
 from socketio.namespace import BaseNamespace
+import gevent
+import time
+import math
 
 class CPUNamespace(BaseNamespace):
     def initialize(self):
         print "INIT!"
-        self.emit("cpu", {"cpu": 123})
     def recv_connect(self):
         print "CONNECT!"
-    def on_noop(self):
-        print "RECEIVED noop"
+        self.spawn(self.job_send_things)
+    def job_send_things(self):
+        cnt = 0
+        while True:
+            cnt += 1
+            self.emit("cpu", {"cpu": 123,
+                              "live_data": (time.time() * 1000,
+                                            math.sin(cnt * 0.2))})
+            gevent.sleep(0.20)
 
 @view_config(route_name="socketio")
 def iohandler(request):
