@@ -7,7 +7,6 @@ from bottle import static_file
 
 PRESENTER_IP = '127.0.0.1'
 
-
 #
 # Real-time
 #
@@ -19,8 +18,7 @@ class PresentationNamespace(BaseNamespace, BroadcastMixin):
         self.emit("slide", 2, 3)
 
     def on_slidechanged(self, data):
-        print "SLIDECHANGED"
-        print "Got a message", data
+        print "SLIDECHANGED from", self.environ['REMOTE_ADDR'], data
         if self.environ['REMOTE_ADDR'] == PRESENTER_IP:
             self.broadcast_event_not_me('slide', data['h'], data['v'])
 
