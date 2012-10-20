@@ -5,25 +5,29 @@ import os
 from bottle import route, run, template, request
 from bottle import static_file
 
+PRESENTER_IP = '127.0.0.1'
+
 
 #
 # Real-time
 #
 from socketio.namespace import BaseNamespace
-class PresentationNamespace(BaseNamespace):
+from socketio.mixins import BroadcastMixin
+class PresentationNamespace(BaseNamespace, BroadcastMixin):
     def initialize(self):
         print "INIT"
         self.emit("slide", 2, 3)
 
-    def on_slidechanged(self, *args, **kwargs):
+    def on_slidechanged(self, data):
         print "SLIDECHANGED"
-        print "Got a message", args, kwargs
+        print "Got a message", data
+        if self.environ['REMOTE_ADDR'] == PRESENTER_IP:
+            self.broadcast_event_not_me('slide', data['h'], data['v'])
 
 from socketio import socketio_manage
 @route('/socket.io/<remaining:path>')
 def index(remaining):
-    socketio_manage(request.environ, {'/presentation': PresentationNamespace},
-                    request)
+    socketio_manage(request.environ, {'/presentation': PresentationNamespace})
 
 
 #
