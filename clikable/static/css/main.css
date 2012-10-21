@@ -94,10 +94,67 @@ textarea {
    ========================================================================== */
 
 
+/* With help from: http://flexiejs.com/playground/ ref. by http://caniuse.com */
+#wrap {
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
 
+#questions {
+}
+#questions li {
+  list-style: none;
+}
+#questions li:first-letter {
+  font-weight: bold;
+}
+.question {
+  display: none;
+}
 
+.box-vert {
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
 
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  box-orient: vertical;
+}
+.box-horiz {
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+}
 
+.cell {
+  margin: 15px;
+  cursor: pointer;
+
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  box-flex: 1;
+
+  width: 150px;
+  height: 150px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 150px;
+
+  /* From: http://layerstyles.org/builder.html */
+border: 1px solid black;
+border-radius: 19px 65px 65px;
+background-image: -webkit-gradient(linear, center top, center bottom, from(#fcfcfc), to(#bfbfbf), color-stop(3%, #f7f7f7), color-stop(12%, #f2f2f2), color-stop(90%, #d9d9d9));
+background-image: -webkit-linear-gradient(top, #fcfcfc, #f7f7f7 3%, #f2f2f2 12%, #d9d9d9 90%, #bfbfbf);
+background-image: -moz-linear-gradient(top, #fcfcfc, #f7f7f7 3%, #f2f2f2 12%, #d9d9d9 90%, #bfbfbf);
+background-image: -o-linear-gradient(top, #fcfcfc, #f7f7f7 3%, #f2f2f2 12%, #d9d9d9 90%, #bfbfbf);
+background-image: -ms-linear-gradient(top, #fcfcfc, #f7f7f7 3%, #f2f2f2 12%, #d9d9d9 90%, #bfbfbf);
+background-image: linear-gradient(to bottom, #fcfcfc, #f7f7f7 3%, #f2f2f2 12%, #d9d9d9 90%, #bfbfbf);
+-webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.75), inset 0 1px 38px rgba(17,83,105,0.54);
+-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.75), inset 0 1px 38px rgba(17,83,105,0.54);
+box-shadow: 0 1px 5px rgba(0,0,0,0.75), inset 0 1px 38px rgba(17,83,105,0.54);
+}
 
 
 
