@@ -1,14 +1,13 @@
 $(function() {
-  var NUM_QUESTIONS = 3;
-  var selected = {question: null};
+  var NUM_QUESTIONS = 6;
+  var selected = {question: -1};
 
   function select_question() {
-    selected.question = ((Math.floor(Math.random() * 1000)) %
-                         NUM_QUESTIONS) + 1;
+    selected.question = (selected.question + 1) % 6;
 
     $('.question').hide();
-    $('.q' + selected.question).show();
-    console.log("SELECTED q" + selected.question);
+    $('.q' + (selected.question + 1)).show();
+    console.log("SELECTED q" + (selected.question + 1));
   };
   select_question();  // first question
 

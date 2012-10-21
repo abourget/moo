@@ -40,7 +40,7 @@
 
   - Quick demo of parallel programming
   - Show off a couple of primitives
-  - Monkey patch
+  - Monkey patch, gevent-subprocess
   - pdb hangs everything
 </section>
 
@@ -202,7 +202,7 @@
   cd ~/moo
   . env/bin/activate
   # Before, you'll need on your system: libevent-dev (Debian)
-  pip install gevent gevent-socketio
+  pip install gevent gevent-socketio gevent-subprocess
   # TODO: warning, we need to install the Git version to have paster integration.
   # otherwise, we need to release to pypi a new -rc version.
   # or "mock" that part for the presentation.
