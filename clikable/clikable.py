@@ -6,7 +6,7 @@ from bottle import route, run, template, request
 from bottle import static_file
 
 cliklog = open('cliklog.log', 'a')
-solutions = {"1": "B", "2": "B", "3": "A", "4": "C", "5": "C", "6": "B", "7": "A"}
+solutions = {"1": "B", "2": "B", "3": "A", "4": "C", "5": "B", "6": "A", "7": "C"}
 
 @route('/event', method="POST")
 def log_event():
@@ -21,6 +21,7 @@ def log_event():
            "type": type}
 
     if type == 'answer':
+        out['question'] = p['question']
         if solutions[p['question']] == p['answer']:
             out['winner'] = 1
         else:

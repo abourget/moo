@@ -1,19 +1,20 @@
 $(function() {
-  var NUM_QUESTIONS = 6;
+  var NUM_QUESTIONS = 7;
   var selected = {question: -1};
 
   function select_question() {
-    selected.question = (selected.question + 1) % 6;
+    selected.question = (selected.question + 1) % NUM_QUESTIONS;
 
     $('.question').hide();
-    $('.q' + (selected.question + 1)).show();
-    console.log("SELECTED q" + (selected.question + 1));
+    var quest = selected.question + 1;
+    $('.q' + quest).show();
+    console.log("SELECTED q" + quest);
   };
   select_question();  // first question
 
   $('.cell').bind('click', function(ev) {
     var data = {type: "answer",
-                question: selected.question,
+                question: selected.question + 1,
                 answer: $(this).text()}
     $.post('/event', data);
     console.log("EVENT", data);
