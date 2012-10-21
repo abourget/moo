@@ -8,6 +8,7 @@ data/
 .\#*
 Moo.egg-info
 paster.log
+cliklog.log
 
 # Personal config file
 development.ini
