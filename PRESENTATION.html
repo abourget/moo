@@ -1,63 +1,17 @@
 
-<section>
-  <h2>Opening</h2>
+# BEFORE PRESENTATION:
 
-  Welcome
-  - Who I am
-  - Where I've been
+- run slides, ensure Internet is up, through Android if required
+- background of the terminal
+- font size of Emacs
+- run clikable, clean up log
 
-  Chocolate up front
-  Nomination of a REGULATOR
-
-
-  I work at Tenscores, Tech Lead over there.
-
-  We're building an awesome Google AdWords campaign soptimization platform.  Every AdWords marketing should know and try it out.
-
-  Our use case:  we're a startup, and we need insights.
-</section>
+SLIDES: setup environment, we assume it's done.
 
 
-
-<section>
-  <h2>AngularJS</h2>
-
-  - Demo data binding
-  - Get data from server (flat JSON), assign a var
-  - Put in a directive, Plot it with a graph
-  - Update the data on the server, and *hop*, the graph updates
-
-  - Replace static data with live data, through Socket.IO though
-
-  - Multiply the number of graphs, by adding more <ts-graph> to the view.
-    Configured through an attribute.
-
-  - Do something like the Evtrack directive, to collect from other parts of
-    the UI.
-</section>
-
-<section>
-  <h2>gevent-socketio</h2>
-
-  - Persistence mech ? MongoDB ? In-memory ? Tailable cursor ?
-  - Gather events through JSON
-  - SocketIO context to send off values tail'd from the incoming flow
-  - Demo MIXIN
-  - Demo on_ things, recv_, disconnect, jobs spawn'd
-    - On disconnect, register an event with a timespan (beginning on connection
-      time).  Use the timeout of the socket to know the presence of the guy :)
-</section>
 
 <section>
   <h2>Pyramid and H5BP bootstrapping</h2>
-
-  mkdir moo
-  cd moo
-  virtualenv env
-  . env/bin/activate
-  pip install pyramid
-  pcreate -t starter Moo
-  python Moo/setup.py develop  # not useful
 
   # Clean up default pyramid files
   rm -rf Moo/moo/templates/* Moo/moo/static/*
@@ -73,7 +27,7 @@
   # TODO: make a 'sed' call to do that..
 
   # In the background, tweak:
-  developement.ini, add line: "mako.directories=moo:" under "use = egg:Moo"
+  develpement.ini, add line: "mako.directories=moo:" under "use = egg:Moo"
   # This will use the 'moo' package's directory, so templates/boo will resolve
   # to the default location.
 
@@ -89,6 +43,12 @@
   pserve --reload development.ini
 
   # Go in index.html, and ADD SOME SPACE AROUND THE "Hello world!" LINE
+  # Add:
+  <div id="wrap">
+  </div>
+
+  # We go add all the `css` we'll need: static/css/main.css
+  yasnippet 'moocss'
 
   # Connect to:
   http://localhost:6543/
@@ -103,16 +63,21 @@
   We'll use Google's CDN to simplify our job here..
 
   # Tweak index.html and add:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
-  # from https://developers.google.com/speed/libraries/devguide (fragment: #angularjs)
-  # just after:
-  <script src="/static/js/plugins.js"></script>
-
-  # In the background, install a local copy of AngularJS and load it from here.
-  cd ~/moo/Moo/moo/static/js/vendor
-  wget http://code.angularjs.org/1.0.2/angular.min.js
-  # Replace the line we just added from the Google CDN with:
   <script src="/static/js/vendor/angular.min.js"></script>
+  # run:
+  cd moo
+  cp vendor/angular.min.js Moo/moo/static/js/vendor/
+
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
+      # from https://developers.google.com/speed/libraries/devguide (fragment: #angularjs)
+      # just after:
+      <script src="/static/js/plugins.js"></script>
+
+      # In the background, install a local copy of AngularJS and load it from here.
+      cd ~/moo/Moo/moo/static/js/vendor
+      wget http://code.angularjs.org/1.0.2/angular.min.js
+      # Replace the line we just added from the Google CDN with:
+      <script src="/static/js/vendor/angular.min.js"></script>
 
   # Add:
   ng-app="moo"
@@ -121,14 +86,6 @@
   # Add:
   ng-controller="MooCtrl"
   # to the <body> tag.
-
-  # Add:
-  ng-cloak
-  # to the same body tag if we can, and add this to the `main.css` file:
-  [ng\:cloak], [ng-cloak], .ng-cloak {
-    display: none;
-  }
-  # See: http://docs.angularjs.org/api/ng.directive:ngCloak for more details.
 
   # Go to `main.js`, and add:
   angular.module('moo', [])
@@ -157,7 +114,10 @@
   # to the DOM node.
 
   # Show two-way, add the <input> tag, change:
-  "<p>Hello {{who}}! This is <input ng-model="who" />.</p>"
+  <p>Hello {{who}}!<p>
+  <p>This is <input ng-model="who" />.</p>
+
+  # When it FOUCs, go insert "class='ng-cloak'" on the <body> tag.
 
   # Show off the two-way binding, explain that ng-model tweaks the $scope value
   # and any changes to the model get reflected (after a $digest() cycle) back
@@ -176,8 +136,10 @@
 
   cd ~/moo
   . env/bin/activate
+
   # Before, you'll need on your system: libevent-dev (Debian)
   pip install gevent gevent-socketio gevent-subprocess
+
   # TODO: warning, we need to install the Git version to have paster integration.
   # otherwise, we need to release to pypi a new -rc version.
   # or "mock" that part for the presentation.
@@ -208,11 +170,12 @@
   # We'll just need to integrate some client service of the Socket.IO
   # protocol now (TODO: rephrase)
 
-  # We'll want to monkey patch, so what I did is:
-  cp ~/moo/env/bin/pserve ~/moo/env/bin/ppserve
-  # and add the line:
-  from gevent.monkey import patch_all; patch_all()
-  # in ppserve down there, just before the last call.
+  # DEPRECATD: THIS DOESN'T SEEM TO BE NECESSARY ANYMORE ? BECAUSE OF THE INTEGRATION ?
+  ## We'll want to monkey patch, so what I did is:
+  #cp ~/moo/env/bin/pserve ~/moo/env/bin/ppserve
+  ## and add the line:
+  #from gevent.monkey import patch_all; patch_all()
+  ## in ppserve down there, just before the last call.
 </section>
 
 <section>
@@ -231,8 +194,9 @@
   # You're not safe from a flaky Internet :)
 
 
+  # Integrate socketio into AngularJS
+  yasnippet: moosocketio  # INDENT 2 SPACES BEFORE!
 
-  # TODO: start writing an AngularJS service:
   .factory("$socketio", function($rootScope) {
     var socket = io.connect();
     return {
@@ -256,13 +220,19 @@
       }
     };
   })
+
+  # Add '/stat' to the connect() method.  We want to use Namespaced socket.io
+
   # Explain a bit of the dependency injection
+
   # Explain this is a standard integration for Socket.IO in AngularJS.
+
   # Explain the callback() wrapped into the $apply called.
+
   # We'll wrap socket.io's lib so that when some data arrives, we actually
   # trigger Angular's $digest, and update the UI.
   # - Show off the $digest cycle ?  Before, after ?
-  # TODO: fix the yasnippet "returnsocketio"
+
 
   # Then, change:
   .controller("MooCtrl", function($scope) {
@@ -270,14 +240,16 @@
   .controller("MooCtrl", function($scope, $socketio) {
   # Explain the Dependency Injection.
   # Add to MooCtrl:
-    $scope.cpu = 'waiting';
+    $scope.sine = 'waiting';
 
-    $socketio.on('cpu', function(data) {
-      $scope.cpu = data.cpu;
+    $socketio.on("sine", function(data) {
+      $scope.sine = data.value;
     });
 
+    $socketio.emit("boo");
+
   # Add to index.html:
-  <p>CPU val: {{cpu}}</p>
+    <p>SINE: {{sine}}</p>
   # Show off the thing with 'waiting'
 
 
@@ -285,37 +257,172 @@
 
   # Add your route to __init__.py:
     config.add_route('socketio', 'socket.io/*remaining')  # based on `resource`
+  # CATCH THAT ONE CORRECTLY!
 
 
   # In views.py, add:
   from socketio.namespace import BaseNamespace
-
-  class CPUNamespace(BaseNamespace):
+  class StatNamespace(BaseNamespace):
       def initialize(self):
           print "INIT!"
-          self.emit("cpu", {"cpu": 123})
-      def recv_connect(self):
-          print "CONNECT!"
+          self.emit("sine", {"value": 123})
+      def on_boo(self, *args):
+          print "Got BOO", args
 
   @view_config(route_name="socketio")
-  def iohandler(request):
+  def socketio(request):
       from socketio import socketio_manage
-      socketio_manage(request.environ, {'/cpu': CPUNamespace},
+      socketio_manage(request.environ, {'/stat': StatNamespace},
                       request)
 
   # Explain the different EVENTS, this is the CORE of the presentation
   #    how socketio works in Gevent!
+  # recv_connect, recv_disconnect, you can handle
+  # All events are mapped, by default, to "on_[event_name]"
 
 </section>
 
 <section>
-  <h2>Integration of the Graph</h2>
+  <h2>Integration of the Sine Graph</h2>
 
   Now let's see a graph with data coming from the server
+
+  # index.html
+  <my-live-graph data="live_sine" max_delta="7000"
+                 width="700" height="200">
+  </my-live-graph>
+
+  cd moo
+  cp vendor/d3.v2.min.js Moo/moo/static/js/vendor
+  # index.html
+  <script src="/static/js/vendor/d3.v2.min.js"></script>
+
+
+  # main.js
+  yasnippet: myLiveGraph  # add the directive at the END
+
+  # main.js, TRANSFORM:
+    $scope.live_sine = []
+    $socketio.on("sine", function(data) {
+      $scope.sine = data.value;
+      console.log("LIVE DATA IN", data, data.value);
+      $scope.live_sine.push(data.value);
+    });
+
+  # views.py:
+
+    import time
+    import math
+    import gevent
+
+    def initialize(self):
+        ...
+        self.spawn(self.job_send_sine)
+
+    def job_send_sine(self):
+        cnt = 0
+        while True:
+            cnt += 1
+            tm = time.time()
+            self.emit("sine", {"value": (tm * 1000,
+                                         math.sin(tm))})
+            gevent.sleep(1)
+
+</section>
+<section>
+  <h2>Integrate speed control</h2>
+
+  # index.html
+  <p>Speed:
+    <select ng-model="speed">
+      <option>0.05</option>
+      <option>0.20</option>
+      <option>0.5</option>
+      <option>1</option>
+      <option>2</option>
+    </select>
+  </p>
+
+  # main.js
+    $scope.speed = 1;
+    $scope.$watch('speed', function(newVal, oldVal) {
+      console.log("CHANGING SPEED");
+      $socketio.emit('new_speed', parseFloat(newVal));
+    });
+
+  # views.py
+    def initialize(self):
+        ...
+        self.session['speed'] = 1.0
+        ...
+
+    def on_new_speed(self, speed):
+        print "NEW SPEED", speed
+        self.session['speed'] = speed
+
+    def job_send_sine(self):
+        ...
+            gevent.sleep(self.session['speed'])
+
 </section>
 
 
 
+
+<section>
+  <h2>Integrating `clikable`</h2>
+
+  # Show off `clikable.py`, explain.  No socket.io involved here.
+  # Show off `static/js/main.js`,
+  # tail -f clikable.log
+
+  # views.py
+
+    import json
+
+    def initialize(self):
+        ...
+        self.spawn(job_grab_clik_data)
+        ...
+
+    def job_send_clik_data(self):
+        import gevent_subprocess as subprocess
+        p = subprocess.Popen('tail -f ~/moo/clikable/clikable.log -n 100',
+                             shell=True,
+                             stdout=subprocess.PIPE)
+        line = p.stdout.readline()
+        while line:
+            print "CLIK DATA", line.strip()
+            self.emit("clik", json.loads(line))
+            line = p.stdout.readline()
+
+  # main.js, MooCtrl
+
+    $scope.clik_data = [];
+    $socketio.on('clik', function(data) {
+      console.log("CLIK", data);
+      $scope.clik_data.push(data);
+    });
+
+  # main.js
+  yasnippet: myBarGraph  # d3 stuff again :)  nice things in there
+
+  # index.html
+        <h4>Losers</h4>
+        <my-bar-graph data="clik_data" type="answer" field="loser">
+        </my-bar-graph>
+
+        <h4>Winners</h4>
+        <my-bar-graph data="clik_data" type="answer" field="winner">
+        </my-bar-graph>
+
+        <h4>Page views</h4>
+        <my-bar-graph data="clik_data" type="pageview">
+        </my-bar-graph>
+
+
+  # Show the `moo.abourget.net.png` image, have everyone go there.
+</section>
 
 
 
@@ -344,30 +451,6 @@ wget http://d3js.org/d3.v2.min.js
 # index.html:
         <script src="/static/js/vendor/d3.v2.min.js"></script>
 
-
-# BEFORE PRESENTATION:
-
-- background of the terminal
-- font size of Emacs
-
-
-
-<section>
-  <h2>Environment setup</h2>
-
-  <p>Commandes to type:</p>
-  <code>
-    mkdir moo
-    cd moo
-    virtualenv env
-    . env/bin/activate
-    pip install pyramid gevent gevent-socketio gevent-subprocess
-    pcreate -t starter Moo
-    cd Moo
-    python setup.py develop
-    pserve --reload development.ini
-  </code>
-</section>
 
 <section>
   <h2></h2>
