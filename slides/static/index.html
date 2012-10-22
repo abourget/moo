@@ -47,64 +47,81 @@
         </section>
 
         <section>
+          <h2>What we'll see</h2>
+          <ul>
+            <li>Gevent</li>
+            <li>Gevent-socketio</li>
+            <li>Pyramid integration</li>
+            <li>AngularJS integration (+ d3.js graphs)</li>
+            <li>bottle integration</li>
+          </ul>
+        </section>
+
+        <section>
           <h2>Who am I</h2>
           <ul>
             <li>Was at Savoir-faire Linux inc. for 5 years, sponsoring Montreal Python.</li>
             <li>Now at <strong>Tenscores</strong>: startup doing <i>Quality Score</i> optimization for Google AdWords campaigns.</li>
+            <li>We're startup, we need insights on user behavior.</li>
           </ul>
           <br />
           <br />
+          <div style="font-size: 14px; line-height: 16px;">I'm married, father of 3 young admirable kids, I studied classical piano at UdeM, I never studied computer science formally, except when I did.  I've been on Linux since 1996.  Friends and I took over #Quebec on IRC/Undernet on a 1200 bauds modem (yes, we had written bots) through a shell connection, in BitchX, boy was it fun and stupid.</div>
+          <br />
           <p>
-            <i><small>- <a href="http://blog.abourget.net">Alexandre Bourget</a> / <a href="http://twitter.com/bourgetalexndre">@bourgetalexndre</a></small></i>
+            <i><small>- <a href="mailto:alex@bourget.cc">Alexandre Bourget</a> / <a href="http://twitter.com/bourgetalexndre">@bourgetalexndre</a> / <a href="http://gplus.to/abourget">http://gplus.to/abourget</a></small></i>
           </p>
         </section>
 
         <section>
-          <h2>Clever Quotes</h2>
-          <p>
-            These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-              The nice thing about standards is that there are so many to choose from</q> and block:
-          </p>
-          <blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-            For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-            reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.
-          </blockquote>
+          <h2>Gevent</h2>
+          <pre><code class="python">>>> import gevent
+>>> from gevent import socket
+>>> urls = ['www.google.com', 'www.example.com', 'www.python.org']
+>>> jobs = [gevent.spawn(socket.gethostbyname, url) for url in urls]
+>>> gevent.joinall(jobs, timeout=2)
+>>> [job.value for job in jobs]
+['74.125.79.106', '208.77.188.166', '82.94.164.162']</code></pre>
         </section>
 
         <section>
-          <h2>Pretty Code</h2>
-          <pre><code contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
+          <h2>Gevent-socketio</h2>
+          <ul>
+            <li>Started by Jeffrey Gelens (he did gevent-websocket also, which is a dependency)</li>
+            <li>Taken over by myself and John Anderson at PyCon 2012</li>
+            <li>Revamped to work with Socket.IO v0.7 (named events, namespaces, etc..)</li>
+          </ul>
+        </section>
 
-    var nodes = document.querySelectorAll( selector );
 
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-       var node = nodes[i];
+        <section>
+          <h2>Environment setup</h2>
 
-       if( !node.className ) ) {
-         node.className += ' roll';
-       }
-    };
-  }
-}
-          </code></pre>
-          <p>Courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+          <p>Commandes to type:</p>
+          <pre>
+  mkdir moo
+  cd moo
+  virtualenv env
+  . env/bin/activate
+  pip install pyramid gevent gevent-socketio gevent-subprocess
+  pcreate -t starter Moo
+  cd Moo
+  python setup.py develop
+  pserve --reload development.ini</pre>
         </section>
 
         <section>
-          <h2>Take a Moment</h2>
-          <p>
-            Press b or period on your keyboard to enter the 'paused' mode. This mode is helpful when you want to take disctracting slides off the screen
-            during a presentation.
-          </p>
+          <h2>Off road</h2>
+          <p>we go...</p>
         </section>
-
 
         <section>
           <h1>THE END</h1>
-          <h3>Alexandre Bourget</h3>
-          <p>I'll appreciate your constructive feedback after the presentation.</p>
+          <h3>Alexandre Bourget - Tenscores</h3>
+          <p>I appreciate your constructive feedback after the presentation.</p>
+          <p>alex@bourget.cc</p>
+          <p>http://gplus.to/abourget -> this is mostly where I post</p>
+          <p>http://blog.abourget.net - @bourgetalexndre</p>
         </section>
 
       </div>
