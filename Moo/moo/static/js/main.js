@@ -168,6 +168,8 @@ angular.module('moo', [])
         /**
          * put our data into bins, based on "stamp"
          */
+        var field_name = $attr.field || $attr.type; // loser, winner or pageview
+
         function binize(data) {
           var binsum = {};
           angular.forEach(data, function(el, i) {
@@ -176,16 +178,27 @@ angular.module('moo', [])
 
             var increment = $scope.field ? el[$scope.field] : 1;
             var bin = Math.floor(el.stamp / 10);
-            var prev = binsum[bin];
-            binsum[bin] = increment + (prev === undefined ? 0 : prev);
+
+            if (binsum[bin] === undefined) {
+              binsum[bin] = {bin: bin * 10,  // restore bin value
+                             loser: 0,
+                             winner: 0,
+                             pageview: 0,
+                             any: 0};
+            }
+
+            binsum[bin][field_name] += increment;
+            binsum[bin].any += increment;
           });
 
-          var sorted = [];
+          console.log(binsum);
+
+          var res = [];
           angular.forEach(binsum, function(v, k) {
-            sorted.push([parseInt(k) * 10, v]);
+            res.push(v);
           });
 
-          return sorted;
+          return res;
         }
 
         var width = $attr.width || 960;
@@ -194,16 +207,15 @@ angular.module('moo', [])
             width = parseInt(width) - margin.left - margin.right,
             height = parseInt(height) - margin.top - margin.bottom;
 
-
         $scope.$watch('data.length', function(new_length) {
           var data = binize($scope.data);
 
           var x = d3.time.scale()
             .range([0, width])
-            .domain(d3.extent(data, function(d) { return d[0]; }));
+            .domain(d3.extent(data, function(d) { return d.bin; }));
           var y = d3.scale.linear()
             .range([0, height])
-            .domain([0, d3.max(data, function(d) { return d[1]; })]);
+            .domain([d3.max(data, function(d) { return d.any; }), 0]);
 
           var xAxis = d3.svg.axis()
             .scale(x)
@@ -224,9 +236,9 @@ angular.module('moo', [])
             .enter()
             .append('rect')
             .attr("x", function(d, i) { return margin.left + (width / data.length * i) })
-            .attr("y", function(d) { return height - y(d[1]) })
+            .attr("y", function(d) { return y(d[field_name]) + margin.top })
             .attr("width", width / data.length - 3)
-            .attr("height", function(d) { return y(d[1]) })
+            .attr("height", function(d) { return height - y(d[field_name]) })
             .attr("fill", 'steelblue');
 
           vis.selectAll('text')
@@ -234,13 +246,13 @@ angular.module('moo', [])
             .enter()
             .append("text")
             .text(function(d, i) {
-              return d[1];
+              return d[field_name];
             })
             .attr("x", function(d, i) {
               return margin.left + (width / data.length * (i + 0.5));
             })
             .attr("y", function(d, i) {
-              return height - y(d[1]);
+              return y(d[field_name]) + margin.top - 5;
             })
             .classed("bar_label", true)
           ;
@@ -250,12 +262,12 @@ angular.module('moo', [])
 
           vis.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(" + margin.left + "," + height + ")")
+            .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
             .call(xAxis);
 
           vis.append("g")
             .attr("class", "y axis")
-            .attr("transform", "translate(" + margin.left + ",0)")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(yAxis);
 
         }); // end $watch

@@ -39,7 +39,7 @@ class StatNamespace(BaseNamespace):
                      stdout=sp.PIPE)
         line = p.stdout.readline()
         while line:
-            print "GOT A LINE", line
+            print "GOT A LINE", line.strip()
             self.emit("clik", json.loads(line))
             line = p.stdout.readline()
 
