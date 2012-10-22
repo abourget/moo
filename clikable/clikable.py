@@ -37,7 +37,11 @@ def log_event():
 def server_static(filename):
     return static_file(filename, root='static')
 
-run(host="0.0.0.0", port=8081)
+@route('/')
+def root():
+    return static_file('index.html', root='static')
+
+run(host="0.0.0.0", port=8086)
 
 
 
