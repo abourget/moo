@@ -73,8 +73,6 @@ angular.module('moo', [])
             width = parseInt(width) - margin.left - margin.right,
             height = parseInt(height) - margin.top - margin.bottom;
 
-        var parseDate = d3.time.format('%c').parse;
-
         var x = d3.time.scale()
             .range([0, width]);
 
@@ -96,6 +94,7 @@ angular.module('moo', [])
 
         $scope.$watch('data.length', function(oldLen, newLen) {
           var data = $scope.data;
+          if (!data.length) { return; }
           if ($scope.max_delta) {
             var last_tm = data[data.length - 1][0];
             // Take out the number we need to have the max size
@@ -127,13 +126,7 @@ angular.module('moo', [])
 
           svg_g.append("g")
             .attr("class", "y axis")
-            .call(yAxis)
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .text("Price ($)");
+            .call(yAxis);
 
           svg_g.append("path")
             .datum(data)
@@ -141,6 +134,125 @@ angular.module('moo', [])
             .attr("d", line);
         });
 
+
+      }
+    }
+  })
+
+
+  /**
+   * Example:
+   *
+   * <my-bar-graph data="clik_data" type="answer" field="loser">
+   * </my-bar-graph>
+   *
+   * `type` is either 'pageview' or 'answer'
+   * `field` is either 'loser' or 'winner', will only work with 'answer' though.
+   */
+  .directive('myBarGraph', function($compile, $interpolate) {
+    return {
+      restrict: "EA",
+      scope: {
+        data: "=",  // make this an Array, that can grow
+        type: "@",  // 'pageview' or 'answer'
+        field: "@"  // 'loser' or 'winner' (otherwise, use 1 as value)
+      },
+      link: function($scope, $element, $attr) {
+        console.log($scope);
+        /**
+         * put our data into bins, based on "stamp"
+         */
+        function binize(data) {
+          var binsum = {};
+          angular.forEach(data, function(el, i) {
+            if ($scope.type != el.type) return;
+            if ($scope.field && el[$scope.field] === undefined) return;
+
+            var increment = $scope.field ? el[$scope.field] : 1;
+            var bin = Math.floor(el.stamp / 10);
+            var prev = binsum[bin];
+            binsum[bin] = increment + (prev === undefined ? 0 : prev);
+          });
+
+          var sorted = [];
+          angular.forEach(binsum, function(v, k) {
+            sorted.push([parseInt(k) * 10, v]);
+          });
+
+          return sorted;
+        }
+
+        var width = $attr.width || 960;
+        var height = $attr.height || 200;
+        var margin = {top: 20, right: 20, bottom: 30, left: 50},
+            width = parseInt(width) - margin.left - margin.right,
+            height = parseInt(height) - margin.top - margin.bottom;
+
+
+        $scope.$watch('data.length', function(new_length) {
+          var data = binize($scope.data);
+
+          var x = d3.time.scale()
+            .range([0, width])
+            .domain(d3.extent(data, function(d) { return d[0]; }));
+          var y = d3.scale.linear()
+            .range([0, height])
+            .domain([0, d3.max(data, function(d) { return d[1]; })]);
+
+          var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+          var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+          d3.select($element[0]).select('svg').remove();
+
+          var vis = d3.select($element[0])
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom);
+
+          vis.selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr("x", function(d, i) { return margin.left + (width / data.length * i) })
+            .attr("y", function(d) { return height - y(d[1]) })
+            .attr("width", width / data.length - 3)
+            .attr("height", function(d) { return y(d[1]) })
+            .attr("fill", 'steelblue');
+
+          vis.selectAll('text')
+            .data(data)
+            .enter()
+            .append("text")
+            .text(function(d, i) {
+              return d[1];
+            })
+            .attr("x", function(d, i) {
+              return margin.left + (width / data.length * (i + 0.5));
+            })
+            .attr("y", function(d, i) {
+              return height - y(d[1]);
+            })
+            .classed("bar_label", true)
+          ;
+
+          // Renew axis
+          vis.selectAll('.axis').remove();
+
+          vis.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(" + margin.left + "," + height + ")")
+            .call(xAxis);
+
+          vis.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + margin.left + ",0)")
+            .call(yAxis);
+
+        }); // end $watch
 
       }
     }

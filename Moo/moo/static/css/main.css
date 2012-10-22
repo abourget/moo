@@ -96,7 +96,7 @@ textarea {
 
 
 body {
-  font: 10px sans-serif;
+  font: 14px sans-serif;
 }
 
 
@@ -121,6 +121,31 @@ body {
   stroke-width: 1.5px;
 }
 
+
+
+/* Bar graph */
+.bar_label {
+  fill: white;
+  font-size: 11px;
+  font-family: sans-serif;
+  text-shadow: 1px 1px gray;
+  text-anchor: middle;
+}
+/* From http://www.colourlovers.com/palette/2454745/Infographic */
+rect {
+  fill: #70C5B1;
+}
+[field=loser] rect {
+  fill: #F96A51;
+}
+[field=winner] rect {
+  fill: #B1D057;
+}
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
 
 
 
