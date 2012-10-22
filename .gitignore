@@ -9,6 +9,7 @@ data/
 Moo.egg-info
 paster.log
 cliklog.log
+clikable.log
 
 # Personal config file
 development.ini

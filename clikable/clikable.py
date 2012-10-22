@@ -1,3 +1,5 @@
+solutions = {"1": "B", "2": "B", "3": "A", "4": "C", "5": "B", "6": "A", "7": "C"}
+
 import os
 import json
 import time
@@ -5,8 +7,7 @@ import time
 from bottle import route, run, template, request
 from bottle import static_file
 
-cliklog = open('cliklog.log', 'a')
-solutions = {"1": "B", "2": "B", "3": "A", "4": "C", "5": "B", "6": "A", "7": "C"}
+cliklog = open('clikable.log', 'a')
 
 @route('/event', method="POST")
 def log_event():
