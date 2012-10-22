@@ -9,8 +9,14 @@ angular.module('moo', [])
     $scope.live_data = [];
     $socketio.on('cpu', function(data) {
       $scope.cpu = data.cpu;
-      console.log("LIVE DATA COMING IN", data);
+      //console.log("LIVE DATA COMING IN", data);
       $scope.live_data.push(data.live_data);
+    });
+
+    $scope.clik_data = [];
+    $socketio.on('clik', function(data) {
+      console.log("CLIK", data);
+      $scope.clik_data.push(data);
     });
 
     $scope.speed = 1.0;
@@ -21,7 +27,7 @@ angular.module('moo', [])
   })
 
   .factory("$socketio", function($rootScope) {
-    var socket = io.connect('/cpu');
+    var socket = io.connect('/stat');
 
     return {
       on: function (eventName, callback) {
