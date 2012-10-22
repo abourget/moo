@@ -7,6 +7,8 @@ from bottle import static_file
 
 PRESENTER_IP = '127.0.0.1'
 
+last_slide = None
+
 #
 # Real-time
 #
@@ -15,11 +17,14 @@ from socketio.mixins import BroadcastMixin
 class PresentationNamespace(BaseNamespace, BroadcastMixin):
     def initialize(self):
         print "INIT"
-        self.emit("slide", 2, 3)
+        if last_slide:
+            self.emit("slide", *last_slide)
 
     def on_slidechanged(self, data):
+        global last_slide
         print "SLIDECHANGED from", self.environ['REMOTE_ADDR'], data
         if self.environ['REMOTE_ADDR'] == PRESENTER_IP:
+            last_slide = (data['h'], data['v'])
             self.broadcast_event_not_me('slide', data['h'], data['v'])
 
 from socketio import socketio_manage
@@ -35,6 +40,9 @@ def index(remaining):
 def server_static(filename):
     return static_file(filename, root='static')
 
+@route('/')
+def root():
+    return static_file('index.html', root='static')
 
 #
 # Serve it all
