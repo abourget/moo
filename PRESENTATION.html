@@ -24,10 +24,10 @@ SLIDES: setup environment, we assume it's done.
   # Fixup the index.html template
   replace "css/" by "/static/css/"
   replace "js/" by "/static/js/"
-  # TODO: make a 'sed' call to do that..
 
   # In the background, tweak:
   develpement.ini, add line: "mako.directories=moo:" under "use = egg:Moo"
+
   # This will use the 'moo' package's directory, so templates/boo will resolve
   # to the default location.
 
@@ -136,17 +136,8 @@ SLIDES: setup environment, we assume it's done.
 
   cd ~/moo
   . env/bin/activate
-
-  # Before, you'll need on your system: libevent-dev (Debian)
+  sudo apt-get install libevent-dev  # Debian
   pip install gevent gevent-socketio gevent-subprocess
-
-  # TODO: warning, we need to install the Git version to have paster integration.
-  # otherwise, we need to release to pypi a new -rc version.
-  # or "mock" that part for the presentation.
-
-  # Explain the different components:
-  # Greenlets are micro-threads
-  # Do something inspired by: http://blog.abourget.net/2011/3/17/new-and-hot-part-4-pyramid-socket-io-gevent/
 
   # In the previous version of gevent-socketio, we needed "pyramid_socketio", which
   # was yet another layer of integration.  Basically, all the good stuff and patterns
@@ -170,12 +161,10 @@ SLIDES: setup environment, we assume it's done.
   # We'll just need to integrate some client service of the Socket.IO
   # protocol now (TODO: rephrase)
 
-  # DEPRECATD: THIS DOESN'T SEEM TO BE NECESSARY ANYMORE ? BECAUSE OF THE INTEGRATION ?
-  ## We'll want to monkey patch, so what I did is:
-  #cp ~/moo/env/bin/pserve ~/moo/env/bin/ppserve
-  ## and add the line:
-  #from gevent.monkey import patch_all; patch_all()
-  ## in ppserve down there, just before the last call.
+  <aside>
+     * You'll need the Git version of gevent-socketio to get the `paster` integration
+     * pyramid_socketio was deprecated
+  </aside>
 </section>
 
 <section>
@@ -426,6 +415,15 @@ SLIDES: setup environment, we assume it's done.
 
 
 
+<section>
+  <h2>My live presentation</h2>
+
+  # You might have noticed that your slides follow mine.
+
+  # Show `slides/static/js/appsync.js`
+  # Show `slides/appsync.py`
+
+</section>
 
 
 Reference for AngularJS + D3 integration
@@ -439,7 +437,6 @@ http://hu.je/moo -> http://moo.abourget.net/
 
 Custom URLs:
 
-
 http://7rl.in/moo
 http://7rl.in/
 http://is.gd/
@@ -447,10 +444,3 @@ http://is.gd/
 cd Moo/moo/static/js/vendor
 wget http://d3js.org/d3.v2.js
 wget http://d3js.org/d3.v2.min.js
-
-# index.html:
-        <script src="/static/js/vendor/d3.v2.min.js"></script>
-
-
-<section>
-  <h2></h2>

@@ -54,6 +54,7 @@ class SocketIOServer(ServerAdapter):
         resource = self.options.get('resource', 'socket.io')
         policy_server = self.options.get('policy_server', False)
         SocketIOServer((self.host, self.port), handler, resource=resource,
-                       policy_server=policy_server).serve_forever()
+                       policy_server=policy_server,
+                       transports=["xhr-multipart", "xhr-polling"]).serve_forever()
 
-run(server=SocketIOServer, host='localhost', port=8080)
+run(server=SocketIOServer, host='0.0.0.0', port=8087)
