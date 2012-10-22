@@ -47,17 +47,6 @@
         </section>
 
         <section>
-          <h2>What we'll see</h2>
-          <ul>
-            <li>Gevent</li>
-            <li>Gevent-socketio</li>
-            <li>Pyramid integration</li>
-            <li>AngularJS integration (+ d3.js graphs)</li>
-            <li>bottle integration</li>
-          </ul>
-        </section>
-
-        <section>
           <h2>Who am I</h2>
           <ul>
             <li>Was at Savoir-faire Linux inc. for 5 years, sponsoring Montreal Python.</li>
@@ -72,6 +61,22 @@
             <i><small>- <a href="mailto:alex@bourget.cc">Alexandre Bourget</a> / <a href="http://twitter.com/bourgetalexndre">@bourgetalexndre</a> / <a href="http://gplus.to/abourget">http://gplus.to/abourget</a></small></i>
           </p>
         </section>
+
+        <section>
+          <h2>What we'll see</h2>
+          <ul>
+            <li>Gevent</li>
+            <li>Gevent-socketio</li>
+            <li>Pyramid integration</li>
+            <li>AngularJS integration (+ d3.js graphs)</li>
+            <li>bottle integration</li>
+            <li>A little bit too much Javascript</li>
+          </ul>
+          <br />
+          <br />
+          <p>You ask questions</p>
+        </section>
+
 
         <section>
           <h2>Gevent</h2>
@@ -103,7 +108,9 @@
   cd moo
   virtualenv env
   . env/bin/activate
+  sudo apt-get install libevent-dev  # for gevent
   pip install pyramid gevent gevent-socketio gevent-subprocess
+
   pcreate -t starter Moo
   cd Moo
   python setup.py develop
