@@ -98,7 +98,10 @@ textarea {
 body {
   font: 14px sans-serif;
 }
-
+#wrap {
+  width: 980px;
+  margin: 0 auto;
+}
 
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none;
@@ -125,10 +128,9 @@ body {
 
 /* Bar graph */
 .bar_label {
-  fill: white;
+  fill: black;
   font-size: 11px;
   font-family: sans-serif;
-  text-shadow: 1px 1px gray;
   text-anchor: middle;
 }
 /* From http://www.colourlovers.com/palette/2454745/Infographic */

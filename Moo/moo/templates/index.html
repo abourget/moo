@@ -17,14 +17,8 @@
         <script src="/static/js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body ng-controller="MooCtrl" ng-cloak>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
 
-
-
-
-
+      <div id="wrap">
         <!-- Add your site or application content here -->
         <p>Hello {{who}}! This is <input ng-model="who" />.</p>
         <p>CPU val: {{cpu}}</p>
@@ -44,14 +38,19 @@
         </my-live-graph>
 
 
+        <h4>Losers</h4>
         <my-bar-graph data="clik_data" type="answer" field="loser">
         </my-bar-graph>
 
-        <my-bar-graph data="clik_data" type="answer" field="winner" width="600">
+        <h4>Winners</h4>
+        <my-bar-graph data="clik_data" type="answer" field="winner">
         </my-bar-graph>
 
+        <h4>Page views</h4>
         <my-bar-graph data="clik_data" type="pageview">
         </my-bar-graph>
+
+      </div>
 
 
 
