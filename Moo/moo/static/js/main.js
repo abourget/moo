@@ -1,34 +1,33 @@
+
 angular.module('moo', [])
-
-  // http://docs.angularjs.org/guide/di, see section "Inline Annotation" for the best way to declare these things.
   .controller("MooCtrl", function($scope, $socketio) {
-    console.log("We're up!");
+    console.log("We're here");
     $scope.who = 'Mama';
-    $scope.cpu = 'waiting';
+    $scope.sine = 'waiting';
+    $scope.speed = 1;
 
-    $scope.live_data = [];
-    $socketio.on('cpu', function(data) {
-      $scope.cpu = data.cpu;
-      //console.log("LIVE DATA COMING IN", data);
-      $scope.live_data.push(data.live_data);
+    $scope.live_sine = []
+    $socketio.on("sine", function(data) {
+      $scope.sine = data.value;
+      $scope.live_sine.push(data.value);
+    });
+
+    $socketio.emit("boo");
+
+    $scope.$watch("speed", function(newVal) {
+      $socketio.emit("new_speed", parseFloat(newVal));
     });
 
     $scope.clik_data = [];
-    $socketio.on('clik', function(data) {
-      console.log("CLIK", data);
+    $socketio.on("clik", function(data) {
+      console.log("CLIK DATA IN", data);
       $scope.clik_data.push(data);
-    });
-
-    $scope.speed = 1.0;
-    $scope.$watch('speed', function(newVal, oldVal) {
-      console.log("CHANGING SPEED");
-      $socketio.emit('new_speed', parseFloat(newVal));
     });
   })
 
+
   .factory("$socketio", function($rootScope) {
     var socket = io.connect('/stat');
-
     return {
       on: function (eventName, callback) {
         socket.on(eventName, function () {
@@ -55,10 +54,10 @@ angular.module('moo', [])
    * Example:
    *
    * <my-live-graph data="live_data" max_delta="300000">
-   *     </my-live-graph>
+   * </my-live-graph>
    *
-   * `data` is an array of [timestamp, value]
-   * `max_delta` is the time window to keep visible, in miliseconds.
+   * 'data' is an array of [timestamp, value]
+   * 'max_delta' is the time window to keep visible, in miliseconds.
    */
   .directive('myLiveGraph', function($compile, $interpolate) {
     return {
@@ -75,26 +74,26 @@ angular.module('moo', [])
         var width = $attr.width || 960;
         var height = $attr.height || 500;
         var margin = {top: 20, right: 20, bottom: 30, left: 50},
-            width = parseInt(width) - margin.left - margin.right,
-            height = parseInt(height) - margin.top - margin.bottom;
+        width = parseInt(width) - margin.left - margin.right,
+        height = parseInt(height) - margin.top - margin.bottom;
 
         var x = d3.time.scale()
-            .range([0, width]);
+          .range([0, width]);
 
         var y = d3.scale.linear()
-            .range([height, 0]);
+          .range([height, 0]);
 
         var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom");
+          .scale(x)
+          .orient("bottom");
 
         var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("left");
+          .scale(y)
+          .orient("left");
 
         var svg = d3.select($element[0]).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom);
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom);
 
 
         $scope.$watch('data.length', function(oldLen, newLen) {
@@ -122,7 +121,7 @@ angular.module('moo', [])
 
           svg.select('g').remove();
           var svg_g = svg.append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
           svg_g.append("g")
             .attr("class", "x axis")
@@ -144,15 +143,14 @@ angular.module('moo', [])
     }
   })
 
-
   /**
    * Example:
    *
    * <my-bar-graph data="clik_data" type="answer" field="loser">
    * </my-bar-graph>
    *
-   * `type` is either 'pageview' or 'answer'
-   * `field` is either 'loser' or 'winner', will only work with 'answer' though.
+   * [yas] elisp error! is either 'pageview' or 'answer'
+   *  is either 'loser' or 'winner', will only work with 'answer' though.
    */
   .directive('myBarGraph', function($compile, $interpolate) {
     return {
@@ -199,8 +197,8 @@ angular.module('moo', [])
         var width = $attr.width || 960;
         var height = $attr.height || 200;
         var margin = {top: 20, right: 20, bottom: 30, left: 50},
-            width = parseInt(width) - margin.left - margin.right,
-            height = parseInt(height) - margin.top - margin.bottom;
+        width = parseInt(width) - margin.left - margin.right,
+        height = parseInt(height) - margin.top - margin.bottom;
 
         $scope.$watch('data.length', function(new_length) {
           var data = binize($scope.data);
@@ -273,5 +271,3 @@ angular.module('moo', [])
       }
     }
   })
-
-;

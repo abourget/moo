@@ -1,50 +1,53 @@
-from pyramid.view import view_config
-
-@view_config(route_name='home', renderer='templates/index.html')
-def my_view(request):
-    return {'project': 'Moo'}
-
-
-
-from socketio.namespace import BaseNamespace
-import gevent
-import time
 import math
+import time
+import gevent
 import json
 
+from pyramid.view import view_config
+
+from socketio.namespace import BaseNamespace
 class StatNamespace(BaseNamespace):
     def initialize(self):
-        print "STAT INIT"
+        print "INIT!"
         self.session['speed'] = 1.0
-        self.spawn(self.job_grab_clik_data)
+        self.emit("sine", {"value": 123})
         self.spawn(self.job_send_sine)
+        self.spawn(self.job_send_clik_data)
+
+    def on_boo(self, *args):
+        print "Got BOO", args
 
     def on_new_speed(self, speed):
-        print "NEW SPEED", speed
-        self.session['speed'] = speed
+        self.session['speed'] = float(speed)
 
     def job_send_sine(self):
         cnt = 0
         while True:
             cnt += 1
             tm = time.time()
-            self.emit("cpu", {"cpu": 123,
-                              "live_data": (tm * 1000,
-                                            math.sin(tm))})
+            self.emit("sine", {"value": (tm * 1000,
+                                         math.sin(tm))})
             gevent.sleep(self.session['speed'])
 
-    def job_grab_clik_data(self):
-        import gevent_subprocess as sp
-        p = sp.Popen('tail -f ~/moo/clikable/cliklog.log -n 100', shell=True,
-                     stdout=sp.PIPE)
+    def job_send_clik_data(self):
+        import gevent_subprocess as subprocess
+        p = subprocess.Popen("tail -f ~/moo/clikable/clikable.log -n 100",
+                             shell=True,
+                             stdout=subprocess.PIPE)
         line = p.stdout.readline()
         while line:
-            print "GOT A LINE", line.strip()
+            print "CLIK DATA", line.strip()
             self.emit("clik", json.loads(line))
             line = p.stdout.readline()
 
+
 @view_config(route_name="socketio")
-def iohandler(request):
+def socketio(request):
+    print "HERE"
     from socketio import socketio_manage
-    socketio_manage(request.environ, {'/stat': StatNamespace},
-                    request)
+    socketio_manage(request.environ, {"/stat": StatNamespace},
+                    request=request)
+
+@view_config(route_name='home', renderer='templates/index.html')
+def my_view(request):
+    return {'project':'Moo'}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app="moo"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" ng-app="moo"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" ng-app="moo"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" ng-app="moo"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
@@ -16,50 +16,59 @@
         <link rel="stylesheet" href="/static/css/main.css">
         <script src="/static/js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
-    <body ng-controller="MooCtrl" ng-cloak>
+    <body ng-controller="MooCtrl" class="ng-cloak">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+        <div id="wrap">
 
-      <div id="wrap">
-        <!-- Add your site or application content here -->
-        <p>Hello {{who}}! This is <input ng-model="who" />.</p>
-        <p>CPU val: {{cpu}}</p>
 
-        <div>Speed:
-          <select ng-model="speed">
-            <option>0.05</option>
-            <option>0.20</option>
-            <option>0.5</option>
-            <option>1</option>
-            <option>2</option>
-          </select>
+
+
+
+
+          <!-- Add your site or application content here -->
+          <p>Hello {{who}}!</p>
+          <p><input ng-model="who" /></p>
+          <p>SINE: {{sine}}</p>
+
+          <p>Speed:
+            <select ng-model="speed">
+              <option>0.05</option>
+              <option>0.2</option>
+              <option>0.5</option>
+              <option>1</option>
+              <option>2</option>
+            </select>
+          </p>
+
+          <my-live-graph data="live_sine" max_delta="7000"
+                         width="700" height="200">
+          </my-live-graph>
+
+          <h4>Page views</h4>
+          <my-bar-graph data="clik_data" type="pageview" width="400">
+          </my-bar-graph>
+
+          <h4>Losers</h4>
+          <my-bar-graph data="clik_data" type="answer" field="loser">
+          </my-bar-graph>
+
+          <h4>Winners</h4>
+          <my-bar-graph data="clik_data" type="answer" field="winner">
+          </my-bar-graph>
+
+
         </div>
-
-        <my-live-graph data="live_data" max_delta="7000"
-                       width="700" height="200">
-        </my-live-graph>
-
-
-        <h4>Losers</h4>
-        <my-bar-graph data="clik_data" type="answer" field="loser">
-        </my-bar-graph>
-
-        <h4>Winners</h4>
-        <my-bar-graph data="clik_data" type="answer" field="winner">
-        </my-bar-graph>
-
-        <h4>Page views</h4>
-        <my-bar-graph data="clik_data" type="pageview">
-        </my-bar-graph>
-
-      </div>
-
 
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
         <script src="/static/js/plugins.js"></script>
-        <script src="/static/js/vendor/angular.min.js"></script>
+
         <script src="/static/js/vendor/socket.io.min.js"></script>
         <script src="/static/js/vendor/d3.v2.min.js"></script>
+        <script src="/static/js/vendor/angular.min.js"></script>
         <script src="/static/js/main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

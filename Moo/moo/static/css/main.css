@@ -96,11 +96,15 @@ textarea {
 
 
 body {
-  font: 14px sans-serif;
+  font: 16px sans-serif;
 }
 #wrap {
   width: 980px;
   margin: 0 auto;
+}
+
+h4 {
+  margin: 0;
 }
 
 [ng\:cloak], [ng-cloak], .ng-cloak {
@@ -108,14 +112,15 @@ body {
 }
 
 
-
 /* http://bl.ocks.org/3883245 */
-
 .axis path,
 .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
+}
+.axis {
+  font-size: 12px;
 }
 
 .line {
@@ -123,7 +128,6 @@ body {
   stroke: steelblue;
   stroke-width: 1.5px;
 }
-
 
 
 /* Bar graph */
@@ -148,6 +152,11 @@ rect {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
+
+
+
+
 
 
 
