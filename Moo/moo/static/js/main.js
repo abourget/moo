@@ -67,7 +67,6 @@ angular.module('moo', [])
         data: "="  // make this an Array, that can grow
       },
       link: function($scope, $element, $attr) {
-        console.log($scope.max_delta);
         if (!$attr.maxDelta) {
           $scope.max_delta = null;
         } else {
@@ -164,7 +163,6 @@ angular.module('moo', [])
         field: "@"  // 'loser' or 'winner' (otherwise, use 1 as value)
       },
       link: function($scope, $element, $attr) {
-        console.log($scope);
         /**
          * put our data into bins, based on "stamp"
          */
@@ -173,10 +171,6 @@ angular.module('moo', [])
         function binize(data) {
           var binsum = {};
           angular.forEach(data, function(el, i) {
-            if ($scope.type != el.type) return;
-            if ($scope.field && el[$scope.field] === undefined) return;
-
-            var increment = $scope.field ? el[$scope.field] : 1;
             var bin = Math.floor(el.stamp / 10);
 
             if (binsum[bin] === undefined) {
@@ -187,11 +181,12 @@ angular.module('moo', [])
                              any: 0};
             }
 
-            binsum[bin][field_name] += increment;
-            binsum[bin].any += increment;
+            var current_field = (el.type == 'pageview' ? 'pageview' :
+                                 el.winner ? 'winner' : 'loser');
+            binsum[bin][current_field] += 1;
+            binsum[bin].any += 1;
           });
 
-          console.log(binsum);
 
           var res = [];
           angular.forEach(binsum, function(v, k) {
@@ -215,7 +210,10 @@ angular.module('moo', [])
             .domain(d3.extent(data, function(d) { return d.bin; }));
           var y = d3.scale.linear()
             .range([0, height])
-            .domain([d3.max(data, function(d) { return d.any; }), 0]);
+            .domain([d3.max(data, function(d) {
+
+              return d3.max([d.loser, d.winner, d.pageview]);
+            }), 0]);
 
           var xAxis = d3.svg.axis()
             .scale(x)
