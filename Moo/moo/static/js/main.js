@@ -6,7 +6,7 @@ angular.module('moo', [])
     $scope.sine = 'waiting';
     $scope.live_sine = [];
     $socketio.on('sine', function(data) {
-      console.log("SINE", data);
+      //console.log("SINE", data);
       $scope.sine = data.value;
       $scope.live_sine.push(data.value);
     });
@@ -199,14 +199,20 @@ angular.module('moo', [])
         $scope.$watch('data.length', function(new_length) {
           var data = binize($scope.data);
 
+          if (data.length) {
+            var time_extent = d3.extent(data, function(d) { return d.bin * 1000; });
+            // Show 10 secondes in the future
+            time_extent[1] = time_extent[1] + 10000;
+          } else {
+            var time_extent = [0, 0];
+          }
           var x = d3.time.scale()
             .range([0, width])
-            .domain(d3.extent(data, function(d) { return d.bin; }));
+            .domain(time_extent);
           var y = d3.scale.linear()
             .range([0, height])
             .domain([d3.max(data, function(d) {
-
-              return d3.max([d.loser, d.winner, d.pageview]);
+              return d3.max([d.loser, d.winner, d.pageview]) * 1.10;
             }), 0]);
 
           var xAxis = d3.svg.axis()
@@ -223,16 +229,19 @@ angular.module('moo', [])
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom);
 
+          var num_ten_seconds = (time_extent[1] - time_extent[0]) / 10000;
+          var ten_s_width = width / num_ten_seconds - 2;
+          // Bars
           vis.selectAll('rect')
             .data(data)
             .enter()
             .append('rect')
-            .attr("x", function(d, i) { return margin.left + (width / data.length * i) })
+            .attr("x", function(d, i) { return margin.left + x(d.bin * 1000); })
             .attr("y", function(d) { return y(d[field_name]) + margin.top })
-            .attr("width", width / data.length - 3)
-            .attr("height", function(d) { return height - y(d[field_name]) })
-            .attr("fill", 'steelblue');
+            .attr("width", ten_s_width)
+            .attr("height", function(d) { return height - y(d[field_name]) });
 
+          // Labels (numbers)
           vis.selectAll('text')
             .data(data)
             .enter()
@@ -241,7 +250,7 @@ angular.module('moo', [])
               return d[field_name];
             })
             .attr("x", function(d, i) {
-              return margin.left + (width / data.length * (i + 0.5));
+              return margin.left + x(d.bin * 1000) + (ten_s_width / 2);
             })
             .attr("y", function(d, i) {
               return y(d[field_name]) + margin.top - 5;
