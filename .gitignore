@@ -16,33 +16,8 @@ Hmm
 Hmm2
 Hmm3
 Hmm4
+*.odt
 
 # Personal config file
-development.ini
 abourget.ini
-ITHQ.db
 
-# Deb releasing stuff
-deploy/debian/ithq/*
-deploy/debian/ithq.*.*
-deploy/debian/ithq.substvars
-deploy/debian/files
-deploy/tmp/
-ithq_*changes
-ithq_*deb
-
-# Test stuff
-tests/chromedriver*
-chromedriver.log
-tests/screenshots
-tests/build/*
-.coverage
-coverage.xml
-nosetests.xml
-
-# Stale data
-ithq.sql
-ithq/clonecheck.txt
-ithq/output.html
-wireframes/WireframesITHQ.odt
-wireframes/WireframesITHQ.pdf
