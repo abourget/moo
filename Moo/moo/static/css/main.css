@@ -94,7 +94,6 @@ textarea {
    ========================================================================== */
 
 
-
 body {
   font: 16px sans-serif;
 }
@@ -103,12 +102,13 @@ body {
   margin: 0 auto;
 }
 
-h4 {
-  margin: 0;
-}
-
+/* See http://docs.angularjs.org/api/ng.directive:ngCloak */
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none;
+}
+
+h4 {
+  margin: 0;
 }
 
 
@@ -152,6 +152,7 @@ rect {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
 
 
 

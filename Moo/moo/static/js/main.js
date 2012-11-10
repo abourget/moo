@@ -1,54 +1,50 @@
-
 angular.module('moo', [])
   .controller("MooCtrl", function($scope, $socketio) {
-    console.log("We're here");
     $scope.who = 'Mama';
-    $scope.sine = 'waiting';
-    $scope.speed = 1;
+    console.log("We're here!");
 
-    $scope.live_sine = []
-    $socketio.on("sine", function(data) {
+    $scope.sine = 'waiting';
+    $scope.live_sine = [];
+    $socketio.on('sine', function(data) {
+      console.log("SINE", data);
       $scope.sine = data.value;
       $scope.live_sine.push(data.value);
     });
 
-    $socketio.emit("boo");
-
-    $scope.$watch("speed", function(newVal) {
+    $scope.speed = 1;
+    $scope.$watch('speed', function(newVal) {
       $socketio.emit("new_speed", parseFloat(newVal));
     });
 
     $scope.clik_data = [];
-    $socketio.on("clik", function(data) {
-      console.log("CLIK DATA IN", data);
+    $socketio.on('clik', function(data) {
+      console.log("CLIK", data);
       $scope.clik_data.push(data);
     });
   })
-
-
-  .factory("$socketio", function($rootScope) {
-    var socket = io.connect('/stat');
-    return {
-      on: function (eventName, callback) {
-        socket.on(eventName, function () {
-          var args = arguments;
-          $rootScope.$apply(function () {
-            callback.apply(socket, args);
-          });
+.factory("$socketio", function($rootScope) {
+  var socket = io.connect('/stat');
+  return {
+    on: function (eventName, callback) {
+      socket.on(eventName, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          callback.apply(socket, args);
         });
-      },
-      emit: function (eventName, data, callback) {
-        socket.emit(eventName, data, function () {
-          var args = arguments;
-          $rootScope.$apply(function () {
-            if (callback) {
-              callback.apply(socket, args);
-            }
-          });
-        })
-      }
-    };
-  })
+      });
+    },
+    emit: function (eventName, data, callback) {
+      socket.emit(eventName, data, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
+      })
+    }
+  };
+})
 
   /**
    * Example:
@@ -149,8 +145,8 @@ angular.module('moo', [])
    * <my-bar-graph data="clik_data" type="answer" field="loser">
    * </my-bar-graph>
    *
-   * [yas] elisp error! is either 'pageview' or 'answer'
-   *  is either 'loser' or 'winner', will only work with 'answer' though.
+   * 'type' is either 'pageview' or 'answer'
+   * 'field' is either 'loser' or 'winner', will only work with 'answer' though.
    */
   .directive('myBarGraph', function($compile, $interpolate) {
     return {
@@ -271,3 +267,5 @@ angular.module('moo', [])
       }
     }
   })
+
+;
